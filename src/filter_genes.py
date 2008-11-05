@@ -10,25 +10,19 @@ Usage:
 ...										# don't worry about it.
 >>> genes_file = StringIO('''
 ... #Gene   Position        initial.pos     Final.pos
-... B3GALT2 chr1    191414799       191422347
-... B3GALT5 chr21   39850239        39956685
-... B3GNT1  chr11   65869419        65871737
-... B3GNT2  chr2    62276766        62305370
-... B3GNT3  chr19   17766658        17785385
-... B3GNT4  chr12   121254181       121258037
-... B3GNT5  chr3    184453726       184473873
+... B3GALT1 chr1    1000	2000
+... B3GALT2  chr1    4000	5000
 ... ''')
 
 >>> sliding_windows_file = StringIO(''' 
 ... # start	middle end	gene_name pop ...
-... 64998701        65098701        65048701        FUT8    San     4       1,00
-... 65118701        65218701        65168701        FUT8    San     5       1,00
-... 64998701        65098701        65048701        FUT8    Japanese        6       1,00
-... 64998701        65098701        65048701        FUT8    Han     5       1,00
-... 64998701        65098701        65048701        FUT8    Pathan  9       1,00
-... 64998701        65098701        65048701        FUT8    Pima    5       1,00
-... 64998701        65098701        65048701        FUT8    Yakut   7       1,00
-... 64998701        65098701        65048701        FUT8    Hazara  9       1,00
+... 0	200	400	FUT8    San     4       1,00		# not included
+... 200	400	600	FUT8    San     4       1,00		# ""
+...	600	800	1000	FUT8    San     4       1,00	# should be Included!
+...	1000	1200	1400	FUT8    San     4       1,00	# ""
+... 1400	1600	1800	FUT8    San     4       1,00	# ""
+... 1800	2000	2200	FUT8    San     4       1,00	# ""
+... 2200	2400	2600	FUT8    San     4       1,00	# not included
 ... ''')
 
 >>> output_file = StringIO()
@@ -63,17 +57,30 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 	"""
 
 	# Reads sliding windows file and create a list in the form
-	# genes = [('gene1', 1000, 2000), ('gene2', 4000, 45000)]
-	genes = []
+	#  genes = [('gene1', 1000, 2000), ('gene2', 4000, 45000)]
+	genes = []		# this could be a dictionary but I prefer not
 	for line in genes_file:
 		if not line.startswith('#'):
-			fields = line.split('\t')
+			fields = line.split('\s')		# it is better to use \s instead of \t,
+											# because it evaluates all space as single ones.
 			gene_name = fields[0]
 			start = fields[2]
 			end = fields[3].strip()		# remove \n\r, like chomp
 			genes.append((gene_name, start, end))
 			
 	logging.debug(genes)
+
+	# reads sliding windows file, and select windows that fall in genes
+	for line in sliding_windows_file:
+		window_fields = split(line)
+		start = window_fields[0]
+		end = window_fields[2]
+		gene = window_fields[3]
+
+		for gene enes:
+			if start 
+
+
 
 
 def _test():
