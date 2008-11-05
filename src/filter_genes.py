@@ -26,4 +26,22 @@ Retrieve sliding windows (from OUT_DAF_lower_filtrat.txt) falling in a gene (fro
 ... 64998701        65098701        65048701        FUT8    Yakut   7       1,00
 ... 64998701        65098701        65048701        FUT8    Hazara  9       1,00
 '''
+
 """
+sliding_windows_file_path = '../data/OUT_DAF_lower_filtrat.txt'
+genes_file_path = '../data/Genes.txt'
+
+def main():
+	sliding_windows_file = file(sliding_windows_file_path, 'r')
+	genes_file = file(genes_file_path, 'r')
+	
+
+def filter_windos(sliding_windows_file, genes_file, output_file):
+	"""
+	Given the two input files and the outputfile handlers, it filters the sliding windows
+	that fall in a gene
+	"""
+
+	for line in sliding_windows_file:
+
+
