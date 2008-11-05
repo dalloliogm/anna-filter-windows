@@ -29,11 +29,11 @@ Usage:
 
 >>> output_file = filter_windows(sliding_windows_file, genes_file, output_file)
 >>> print output_file.read()	#doctest: +NORMALIZE_WHITESPACE
-#window_start, window_middle, window_end, gene_name
-600		800		1000	B3GALT1    San     4       1,00	# should be Included!
-1000	1200	1400	B3GALT1    San     4       1,00	# should be Included!
-1400	1600	1800	B3GALT1    San     4       1,00	# should be Included!
-1800	2000	2200	B3GALT1    San     4       1,00	# should be Included!
+#gene_name, gene_start, gene_end, window_start, window_middle, window_end, population,     number, score
+B3GALT1	1000	2000	600	800	1000	San	4	1,00
+B3GALT1	1000	2000	1000	1200	1400	San	4	1,00
+B3GALT1	1000	2000	1400	1600	1800	San	4	1,00
+B3GALT1	1000	2000	1800	2000	2200	San	4	1,00
 <BLANKLINE>
 
 """
@@ -118,8 +118,8 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 #	logging.debug(("genes :", genes))		# print the contents of genes, if level=loggin.DEBUG
 
 	# read sliding windows file, and select windows that fall in genes
-	output = '#window_start, window_middle, window_end, gene_name\n'
-	outputlineskeleton = "%s	%s	%s	%s\n"	# %(window_start, window_middle, window_end, gene_name)
+	output = '#gene_name, gene_start, gene_end, window_start, window_middle, window_end, population,     number, score\n'
+	outputlineskeleton = "%s\t%d\t%d\t%d\t%d\t%d\t%s\t%s\t%s\n"	# %(gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
 
 	for line in sliding_windows_file:
 		line = line.strip()		# remove trailing characters (like chomp)
@@ -130,7 +130,10 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 			window_start = int(window_fields[0])
 			window_end = int(window_fields[2])
 			window_middle = int(window_fields[1])
-			gene = window_fields[3]
+#			gene = window_fields[3]
+			population = window_fields[4]
+			number = window_fields[5]
+			score = window_fields[6]
 
 			for gene in genes:
 				gene_start = int(gene[1])
@@ -140,13 +143,11 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 				if gene_end >= window_start >= gene_start:
 					logging.debug("This window starts inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
 					logging.debug(line)
-#					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
-					output += line + "\n"
+					output +=  outputlineskeleton % (gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
 				elif gene_end >= window_end >= gene_start:
 					logging.debug("This window ends inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
 					logging.debug(line)
-					output += line + "\n"
-#					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
+					output +=  outputlineskeleton % (gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
 	
 	logging.debug(output)
 	output_file.write(output)
