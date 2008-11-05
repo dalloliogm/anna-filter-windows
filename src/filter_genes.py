@@ -39,16 +39,52 @@ Usage:
 """
 
 import logging 	# module used only to debug
-
-sliding_windows_file_path = '../data/OUT_DAF_lower_filtrat.txt'
-genes_file_path = '../data/Genes.txt'
-output_file_path = '../results/filtered_windows.txt'
+import getopt
+import sys
 
 
 def main():
 	"""
 	Open file handlers and launch filter_windows function.
 	"""
+	sliding_windows_file_path = ''
+	genes_file_path = ''
+	output_file_path = ''
+
+	# Read arguments and parameters
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "g:w:o:h", ["genes=", "window=", "output=", "help"])
+
+	except getopt.GetoptError, err:
+		usage()
+		sys.exit(2)
+	
+	if opts == []:
+		usage()
+		sys.exit()
+
+	for opt, arg in opts:
+		if opt in ('-h', '--help'):
+			usage()
+			sys.exit()
+		elif opt in ('--genes', '-g'):
+			genes_file_path = arg
+		elif opt in ('--window', '-w'):
+			sliding_windows_file_path = arg
+		elif opt in ('--output', '-o'):
+			output_file_path = arg
+
+	# default values
+	if not sliding_windows_file_path:
+		print "using default parameters windows file!"
+		sliding_windows_file_path = '../data/Resultats_lower_daf.txt'
+	elif not genes_file_path:
+		print "using default genes file!"
+		genes_file_path = '../data/Genes.txt'
+	elif not output_file_path:
+		print "using default output file!"
+		output_file_path = '../results/filtered_windows.txt'
+
 	sliding_windows_file = file(sliding_windows_file_path, 'r')
 	genes_file = file(genes_file_path, 'r')
 	output_file = file(output_file_path, 'w')
