@@ -27,13 +27,14 @@ Usage:
 
 >>> output_file = StringIO()
 
->>> filter_windows(sliding_windows_file, genes_file, output_file)
->>> print output_file.read()	# this is the expected output # doctest: +NORMALIZE_WHITESPACE
-600		800		1000	FUT8
-1000	1200	1400	FUT8 
-1400	1600	1800	FUT8
-1800	2000	2200	FUT8
-
+>>> output_file = filter_windows(sliding_windows_file, genes_file, output_file)
+>>> print output_file.read()	#doctest: +NORMALIZE_WHITESPACE
+#window_start, window_middle, window_end, gene_name
+600		800		1000	B3GALT2
+1000	1200	1400	B3GALT2
+1400	1600	1800	B3GALT2
+1800	2000	2200	B3GALT2
+<BLANKLINE>
 
 """
 
@@ -78,18 +79,18 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 			end = fields[3].strip()		# remove \n\r, like chomp
 			genes.append((gene_name, start, end))
 			
-	logging.debug(genes)		# print the contents of genes, if level=loggin.DEBUG
+#	logging.debug(("genes :", genes))		# print the contents of genes, if level=loggin.DEBUG
 
 	# read sliding windows file, and select windows that fall in genes
 	output = '#window_start, window_middle, window_end, gene_name\n'
 	outputlineskeleton = "%s	%s	%s	%s\n"	# %(window_start, window_middle, window_end, gene_name)
 
 	for line in sliding_windows_file:
-		line = line.strip()
+		line = line.strip()		# remove trailing characters (like chomp)
 		if line and not line.startswith('#'):
 			window_fields = line.split()
 
-			logging.debug(window_fields)
+#			logging.debug(window_fields)
 			window_start = int(window_fields[0])
 			window_end = int(window_fields[2])
 			window_middle = int(window_fields[1])
@@ -98,6 +99,7 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 			for gene in genes:
 				gene_start = int(gene[1])
 				gene_end = int(gene[2])
+				gene_name = gene[0]
 				# if window_start is comprised between gene_end and gene_start
 				if gene_end >= window_start >= gene_start:
 					logging.debug("This window starts inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
@@ -109,9 +111,9 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
 	
 	logging.debug(output)
-	outputfile.write(output)
-	outputfile.seek(0)
-	return outputfile
+	output_file.write(output)
+	output_file.seek(0)
+	return output_file
 
 
 def _test():
@@ -121,6 +123,6 @@ def _test():
 
 if __name__ == '__main__':
 	logging.basicConfig(level = logging.DEBUG)
-#	main()
+	main()
 	_test()
 
