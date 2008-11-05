@@ -30,10 +30,10 @@ Usage:
 >>> output_file = filter_windows(sliding_windows_file, genes_file, output_file)
 >>> print output_file.read()	#doctest: +NORMALIZE_WHITESPACE
 #window_start, window_middle, window_end, gene_name
-600		800		1000	B3GALT2
-1000	1200	1400	B3GALT2
-1400	1600	1800	B3GALT2
-1800	2000	2200	B3GALT2
+600		800		1000	B3GALT1
+1000	1200	1400	B3GALT1
+1400	1600	1800	B3GALT1
+1800	2000	2200	B3GALT1
 <BLANKLINE>
 
 """
