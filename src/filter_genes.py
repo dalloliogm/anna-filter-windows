@@ -2,8 +2,8 @@
 """
 Retrieve sliding windows (from OUT_DAF_lower_filtrat.txt) falling in a gene (from Genes.txt)
 
-
 Usage:
+	python filter_genes.py --genes <genes_file> --window <sliding windows results file> --output <output file>
 
 >>> from StringIO import StringIO		# This module is to create fake files,
 ...										# to be used for testing purposes.
