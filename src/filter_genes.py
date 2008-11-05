@@ -16,13 +16,13 @@ Usage:
 
 >>> sliding_windows_file = StringIO(''' 
 ... # start	middle end	gene_name pop ...
-... 0		200		400		FUT8    San     4       1,00	# not included
-... 200		400		600		FUT8    San     4       1,00	# ""
-...	600		800		1000	FUT8    San     4       1,00	# should be Included!
-...	1000	1200	1400	FUT8    San     4       1,00	# ""
-... 1400	1600	1800	FUT8    San     4       1,00	# ""
-... 1800	2000	2200	FUT8    San     4       1,00	# ""
-... 2200	2400	2600	FUT8    San     4       1,00	# not included
+... 0		200		400		B3GALT1    San     4       1,00	# not included
+... 200		400		600		B3GALT1    San     4       1,00	# not included
+...	600		800		1000	B3GALT1    San     4       1,00	# should be Included!
+...	1000	1200	1400	B3GALT1    San     4       1,00	# should be Included!
+... 1400	1600	1800	B3GALT1    San     4       1,00	# should be Included!
+... 1800	2000	2200	B3GALT1    San     4       1,00	# should be Included!
+... 2200	2400	2600	B3GALT1    San     4       1,00	# not included
 ... ''')
 
 >>> output_file = StringIO()
@@ -65,12 +65,15 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 	#  genes = [('gene1', 1000, 2000), ('gene2', 4000, 45000)]
 	genes = []		# this could be a dictionary but I prefer not
 	for line in genes_file:
-		print "line: ", line
-		if not line.startswith('#') or not line:
-			fields = line.split('\t')	
+		line = line.strip()
+
+		if line and not line.startswith('#'):		# if line is not empty and not a comment
+			logging.debug(("line: %s" %line))
+			fields = line.split()		# it is better to use the default splitting algorithm here.
+										# read help(''.split)	
 
 			gene_name = fields[0]
-			print fields
+			logging.debug(("fields: %s" %fields))
 			start = fields[2]
 			end = fields[3].strip()		# remove \n\r, like chomp
 			genes.append((gene_name, start, end))
@@ -78,16 +81,37 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 	logging.debug(genes)		# print the contents of genes, if level=loggin.DEBUG
 
 	# read sliding windows file, and select windows that fall in genes
+	output = '#window_start, window_middle, window_end, gene_name\n'
+	outputlineskeleton = "%s	%s	%s	%s\n"	# %(window_start, window_middle, window_end, gene_name)
+
 	for line in sliding_windows_file:
-		window_fields = line.split()
+		line = line.strip()
+		if line and not line.startswith('#'):
+			window_fields = line.split()
 
-		logging.debug(window_fields)
-		start = window_fields[0]
-		end = window_fields[2]
-		gene = window_fields[3]
+			logging.debug(window_fields)
+			window_start = int(window_fields[0])
+			window_end = int(window_fields[2])
+			window_middle = int(window_fields[1])
+			gene = window_fields[3]
 
-		for gene in genes:
-			print start, end, gene[1], gene[2]
+			for gene in genes:
+				gene_start = int(gene[1])
+				gene_end = int(gene[2])
+				# if window_start is comprised between gene_end and gene_start
+				if gene_end >= window_start >= gene_start:
+					logging.debug("This window starts inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
+					logging.debug(line)
+					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
+				elif gene_end >= window_end >= gene_start:
+					logging.debug("This window ends inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
+					logging.debug(line)
+					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
+	
+	logging.debug(output)
+	outputfile.write(output)
+	outputfile.seek(0)
+	return outputfile
 
 
 def _test():
