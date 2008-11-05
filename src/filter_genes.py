@@ -30,10 +30,10 @@ Usage:
 >>> output_file = filter_windows(sliding_windows_file, genes_file, output_file)
 >>> print output_file.read()	#doctest: +NORMALIZE_WHITESPACE
 #window_start, window_middle, window_end, gene_name
-600		800		1000	B3GALT1
-1000	1200	1400	B3GALT1
-1400	1600	1800	B3GALT1
-1800	2000	2200	B3GALT1
+600		800		1000	B3GALT1    San     4       1,00	# should be Included!
+1000	1200	1400	B3GALT1    San     4       1,00	# should be Included!
+1400	1600	1800	B3GALT1    San     4       1,00	# should be Included!
+1800	2000	2200	B3GALT1    San     4       1,00	# should be Included!
 <BLANKLINE>
 
 """
@@ -140,11 +140,13 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 				if gene_end >= window_start >= gene_start:
 					logging.debug("This window starts inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
 					logging.debug(line)
-					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
+#					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
+					output += line + "\n"
 				elif gene_end >= window_end >= gene_start:
 					logging.debug("This window ends inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
 					logging.debug(line)
-					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
+					output += line + "\n"
+#					output +=  outputlineskeleton % (window_start, window_middle, window_end, gene_name)
 	
 	logging.debug(output)
 	output_file.write(output)
