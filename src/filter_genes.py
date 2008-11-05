@@ -3,8 +3,10 @@
 Retrieve sliding windows (from OUT_DAF_lower_filtrat.txt) falling in a gene (from Genes.txt)
 
 
+Usage:
 
 >>> import StringIO		# don't worry about this. This is just to create an example
+# Create a fake sliding_windows_file, for testing purposes
 >>> sliding_windows_file = StringIO(''' 
 ... #Gene   Position        initial.pos     Final.pos
 ... B3GALT2 chr1    191414799       191422347
@@ -16,6 +18,7 @@ Retrieve sliding windows (from OUT_DAF_lower_filtrat.txt) falling in a gene (fro
 ... B3GNT5  chr3    184453726       184473873
 ... '''
 
+# creating a fake genes file
 >>> genes_file = StringIO('''
 ... 64998701        65098701        65048701        FUT8    San     4       1,00
 ... 65118701        65218701        65168701        FUT8    San     5       1,00
@@ -25,11 +28,17 @@ Retrieve sliding windows (from OUT_DAF_lower_filtrat.txt) falling in a gene (fro
 ... 64998701        65098701        65048701        FUT8    Pima    5       1,00
 ... 64998701        65098701        65048701        FUT8    Yakut   7       1,00
 ... 64998701        65098701        65048701        FUT8    Hazara  9       1,00
-'''
+... '''
 
+# creating a fake output file
+>>> outputfile = StringIO()
+
+>>> filter_windows(
 """
 sliding_windows_file_path = '../data/OUT_DAF_lower_filtrat.txt'
 genes_file_path = '../data/Genes.txt'
+output_file_path = '../results/filtered_windows.txt'
+
 
 def main():
 	sliding_windows_file = file(sliding_windows_file_path, 'r')
