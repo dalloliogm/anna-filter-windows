@@ -18,7 +18,8 @@ Usage:
 ... # start	middle end	gene_name pop ...
 ... 0		200		400		B3GALT1    San     4       1,00	# not included
 ... 200		400		600		B3GALT1    San     4       1,00	# not included
-...	600		800		1000	B3GALT1    San     4       1,00	# should be Included!
+...	600		800		1000	B3GALT1    San     4       1,00	# not included
+...	800		1000	1200	B3GALT1    San     4       1,00	# should be Included!
 ...	1000	1200	1400	B3GALT1    San     4       1,00	# should be Included!
 ... 1400	1600	1800	B3GALT1    San     4       1,00	# should be Included!
 ... 1800	2000	2200	B3GALT1    San     4       1,00	# should be Included!
@@ -30,7 +31,7 @@ Usage:
 >>> output_file = filter_windows(sliding_windows_file, genes_file, output_file)
 >>> print output_file.read()	#doctest: +NORMALIZE_WHITESPACE
 #gene_name, gene_start, gene_end, window_start, window_middle, window_end, population,     number, score
-B3GALT1	1000	2000	600	800	1000	San	4	1,00
+B3GALT1	1000	2000	800		1000	1200	San	4	1,00
 B3GALT1	1000	2000	1000	1200	1400	San	4	1,00
 B3GALT1	1000	2000	1400	1600	1800	San	4	1,00
 B3GALT1	1000	2000	1800	2000	2200	San	4	1,00
@@ -42,6 +43,8 @@ import logging 	# module used only to debug
 import getopt
 import sys
 
+def usage():
+	print __doc__
 
 def main():
 	"""
@@ -53,7 +56,7 @@ def main():
 
 	# Read arguments and parameters
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "g:w:o:h", ["genes=", "window=", "output=", "help"])
+		opts, args = getopt.getopt(sys.argv[1:], "g:w:o:ht", ["genes=", "window=", "output=", "help", "test"])
 
 	except getopt.GetoptError, err:
 		usage()
@@ -73,6 +76,9 @@ def main():
 			sliding_windows_file_path = arg
 		elif opt in ('--output', '-o'):
 			output_file_path = arg
+		elif opt in ('--test', '-t'):
+			_test()
+			sys.exit()
 
 	# default values
 	if not sliding_windows_file_path:
@@ -111,8 +117,8 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 
 			gene_name = fields[0]
 			logging.debug(("fields: %s" %fields))
-			start = fields[2]
-			end = fields[3].strip()		# remove \n\r, like chomp
+			start = int(fields[2])
+			end = int(fields[3].strip())		# remove \n\r, like chomp
 			genes.append((gene_name, start, end))
 			
 #	logging.debug(("genes :", genes))		# print the contents of genes, if level=loggin.DEBUG
@@ -140,14 +146,14 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 				gene_end = int(gene[2])
 				gene_name = gene[0]
 				# if window_start is comprised between gene_end and gene_start
-				if gene_end >= window_start >= gene_start:
+				if gene_end > window_start >= gene_start:
 					logging.debug("This window starts inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
 					logging.debug(line)
-					output +=  outputlineskeleton % (gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
-				elif gene_end >= window_end >= gene_start:
+					output += outputlineskeleton % (gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
+				elif gene_end >= window_end > gene_start:
 					logging.debug("This window ends inside gene %s (%s, %s)" %(gene[0], gene_start, gene_end))
 					logging.debug(line)
-					output +=  outputlineskeleton % (gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
+					output += outputlineskeleton % (gene_name, gene_start, gene_end, window_start, window_middle, window_end, population, number, score)
 	
 	logging.debug(output)
 	output_file.write(output)
