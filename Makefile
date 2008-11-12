@@ -1,13 +1,14 @@
 
-INPUTFILES = Resultats_daf_lower_95percent Resultats_maf_lower_95percent.txt Resultats_daf_upper_95percent.txt Resultats_daf_upper_95percent
+INPUTFILES = Resultats_daf_lower_95percent Resultats_maf_lower_95percent Resultats_daf_upper_95percent Resultats_maf_upper_95percent lower_DAF lower_MAF upper_DAF upper_MAF
 RESULTSDIR = ./results
-RESULTFILES = $(addprefix $(RESULTSDIR)/,$(addsuffix .txt,$(INPUTFILES)))
+RESULTFILES = $(addprefix $(RESULTSDIR)/,$(addsuffix _filtered.txt,$(INPUTFILES)))
 
 help:
 	@echo 'type "make filter" to calculate results/filtered_windows.txt'
 
 filter_all: results/lower_DAF_filtered.txt results/lower_MAF_filtered.txt results/upper_DAF_filtered.txt  results/upper_MAF_filtered.txt
 
+all: $(RESULTFILES) src/filter_genes.py
 
 $(RESULTSDIR)/%_filtered.txt: data/%.txt
 	python src/filter_genes.py --genes data/Genes.txt --window $^ --output $@

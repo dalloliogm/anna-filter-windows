@@ -42,6 +42,7 @@ B3GALT1	1000	2000	1800	2000	2200	San	4	1,00
 import logging 	# module used only to debug
 import getopt
 import sys
+import re
 
 def usage():
 	print __doc__
@@ -111,6 +112,7 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 		line = line.strip()
 
 		if line and not line.startswith('#'):		# if line is not empty and not a comment
+#		if line and re.match('\d+', line):
 			logging.debug(("line: %s" %line))
 			fields = line.split()		# it is better to use the default splitting algorithm here.
 										# read help(''.split)	
