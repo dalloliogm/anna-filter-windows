@@ -15,15 +15,16 @@ Usage:
 ... ''')
 
 >>> sliding_windows_file = StringIO(''' 
-... # start	middle end	gene_name pop ...
-... 0		200		400		B3GALT1    San     4       1,00	# not included
-... 200		400		600		B3GALT1    San     4       1,00	# not included
-...	600		800		1000	B3GALT1    San     4       1,00	# not included
-...	800		1000	1200	B3GALT1    San     4       1,00	# should be Included!
-...	1000	1200	1400	B3GALT1    San     4       1,00	# should be Included!
-... 1400	1600	1800	B3GALT1    San     4       1,00	# should be Included!
-... 1800	2000	2200	B3GALT1    San     4       1,00	# should be Included!
-... 2200	2400	2600	B3GALT1    San     4       1,00	# not included
+... # start	end middle	gene_name pop ...
+... 0		400		200		B3GALT1    San     4       1,00	# not included
+... 200		600		400		B3GALT1    San     4       1,00	# not included
+...	600		1000	800		B3GALT1    San     4       1,00	# not included
+...	700		1100	900		B3GALT1    San     4       1,00	# should be Included!
+...	800		1200	1000	B3GALT1    San     4       1,00	# should be Included!
+...	1000	1400	1200	B3GALT1    San     4       1,00	# should be Included!
+... 1400	1800	1600	B3GALT1    San     4       1,00	# should be Included!
+... 1800	2200	2000	B3GALT1    San     4       1,00	# should be Included!
+... 2200	2600	2400	B3GALT1    San     4       1,00	# not included
 ... ''')
 
 >>> output_file = StringIO()
@@ -31,6 +32,7 @@ Usage:
 >>> output_file = filter_windows(sliding_windows_file, genes_file, output_file)
 >>> print output_file.read()	#doctest: +NORMALIZE_WHITESPACE
 #gene_name, gene_start, gene_end, window_start, window_middle, window_end, population,     number, score
+B3GALT1	1000	2000	700		900		1100	San	4	1,00
 B3GALT1	1000	2000	800		1000	1200	San	4	1,00
 B3GALT1	1000	2000	1000	1200	1400	San	4	1,00
 B3GALT1	1000	2000	1400	1600	1800	San	4	1,00
@@ -136,8 +138,8 @@ def filter_windows(sliding_windows_file, genes_file, output_file):
 
 #			logging.debug(window_fields)
 			window_start = int(window_fields[0])
-			window_end = int(window_fields[2])
-			window_middle = int(window_fields[1])
+			window_middle = int(window_fields[2])
+			window_end = int(window_fields[1])
 #			gene = window_fields[3]
 			population = window_fields[4]
 			number = window_fields[5]
