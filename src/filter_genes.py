@@ -23,7 +23,7 @@ Usage:
 ...	800		1200	1000	B3GALT1    San     4       1,00	# should be Included!
 ...	1000	1400	1200	B3GALT1    San     4       1,00	# should be Included!
 ... 1400	1800	1600	B3GALT1    San     4       1,00	# should be Included!
-... 1800	2200	2000	B3GALT1    San     4       1,00	# should be Included!
+... 1800	2200	2000	B3GALT1    San     4       1.00	# should be Included!
 ... 2200	2600	2400	B3GALT1    San     4       1,00	# not included
 ... ''')
 
@@ -36,7 +36,7 @@ B3GALT1	1000	2000	700		900		1100	San	4	1,00
 B3GALT1	1000	2000	800		1000	1200	San	4	1,00
 B3GALT1	1000	2000	1000	1200	1400	San	4	1,00
 B3GALT1	1000	2000	1400	1600	1800	San	4	1,00
-B3GALT1	1000	2000	1800	2000	2200	San	4	1,00
+B3GALT1	1000	2000	1800	2000	2200	San	4	1.00
 <BLANKLINE>
 
 """
