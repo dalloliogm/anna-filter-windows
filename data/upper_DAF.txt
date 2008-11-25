@@ -1,4 +1,4 @@
-window.start	window.end	window.center	Gene	Population	nsnps,daf	daf,upper
+# window.start	window.end	window.center	Gene	Population	nsnps,daf	daf,upper
 167982253	168082253	168032253	B3GALT1	Adygei	9	0.333333333
 168012253	168112253	168062253	B3GALT1	Adygei	10	0.3
 168042253	168142253	168092253	B3GALT1	Adygei	13	0.076923077

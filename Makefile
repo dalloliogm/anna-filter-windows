@@ -1,5 +1,5 @@
 
-INPUTFILES = Resultats_daf_lower_95percent Resultats_maf_lower_95percent Resultats_daf_upper_95percent Resultats_maf_upper_95percent Resultats_lower_daf Resultats_lower_maf Resultats_upper_daf Resultats_upper_maf
+INPUTFILES = Resultats_daf_lower_95percent Resultats_maf_lower_95percent Resultats_daf_upper_95percent Resultats_maf_upper_95percent Resultats_lower_daf Resultats_lower_maf Resultats_upper_daf Resultats_upper_maf lower_MAF lower_DAF upper_MAF upper_DAF
 RESULTSDIR = ./results
 RESULTFILES = $(addprefix $(RESULTSDIR)/,$(addsuffix _filtered.txt,$(INPUTFILES)))
 
