@@ -5,9 +5,13 @@ Retrieve sliding windows (from OUT_DAF_lower_filtrat.txt) falling in a gene (fro
 Usage:
 	python filter_genes.py --genes <genes_file> --window <sliding windows results file> --output <output file>
 
->>> from StringIO import StringIO		# This module is to create fake files,
-...										# to be used for testing purposes.
-...										# don't worry about it.
+The genes file contains the start and end coordinates of every gene.
+The sliding_windows_file contains the coordinates of sliding windows that have been run over the same
+sequences in the gene file.
+The output of this script is a file in which the sliding windows which fall inside a gene have been selected.
+
+
+>>> from StringIO import StringIO		# don't worry about this statement
 >>> genes_file = StringIO('''
 ... #Gene   Position        initial.pos     Final.pos
 ... B3GALT1 chr1    1000	2000
